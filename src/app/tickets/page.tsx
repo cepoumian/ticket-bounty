@@ -1,11 +1,13 @@
+import clsx from "clsx";
 import Link from "next/link";
+import { CheckIcon, DocumentIcon, PencilIcon } from "@/components/icons";
 import { initialTickets } from "@/data";
 import { ticketPath } from "@/paths";
 
 const TICKET_ICONS = {
-  OPEN: "O",
-  DONE: "X",
-  IN_PROGRESS: ">",
+  OPEN: <DocumentIcon />,
+  IN_PROGRESS: <PencilIcon />,
+  DONE: <CheckIcon />,
 };
 
 const TicketsPage = () => {
@@ -18,15 +20,21 @@ const TicketsPage = () => {
         </p>
       </div>
 
-      <div className="flex flex-1 flex-col items-center gap-y-4">
+      <div className="animate-fade-from-top flex flex-1 flex-col items-center gap-y-4">
         {initialTickets.map((ticket) => (
           <div
             key={ticket.id}
             className="w-full max-w-[420px] gap-y-4 border border-slate-100 p-4"
           >
             <div>{TICKET_ICONS[ticket.status]}</div>
-            <h2 className="truncate text-lg">{ticket.title}</h2>
-            <p className="truncate text-sm">{ticket.content}</p>
+            <h3 className="truncate text-lg font-bold">{ticket.title}</h3>
+            <p
+              className={clsx("truncate text-sm", {
+                "line-through": ticket.status === "DONE",
+              })}
+            >
+              {ticket.content}
+            </p>
             <Link href={ticketPath(ticket.id)} className="text-sm underline">
               View
             </Link>
