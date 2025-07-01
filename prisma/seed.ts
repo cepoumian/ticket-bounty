@@ -9,16 +9,22 @@ const tickets = [
     title: "Ticket 1",
     content: "This is the content of ticket 1 from the database.",
     status: "DONE" as const,
+    deadline: new Date().toISOString().split("T")[0], // Today's date in YYYY-MM-DD format
+    bounty: 499, // $ 4.99,
   },
   {
     title: "Ticket 2",
     content: "This is the content of ticket 2 from the database.",
     status: "OPEN" as const,
+    deadline: new Date().toISOString().split("T")[0],
+    bounty: 399, // $ 3.99
   },
   {
     title: "Ticket 3",
     content: "This is the content of ticket 3 from the database.",
     status: "IN_PROGRESS" as const,
+    deadline: new Date().toISOString().split("T")[0],
+    bounty: 599, // $ 5.99
   },
 ];
 
