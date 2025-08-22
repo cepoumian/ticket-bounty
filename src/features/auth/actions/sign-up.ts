@@ -1,8 +1,6 @@
 "use server";
 
-import { hash } from "@node-rs/argon2";
 import { Prisma } from "@prisma/client";
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import {
@@ -10,9 +8,12 @@ import {
   fromErrorToActionState,
   toActionState,
 } from "@/components/form/utils/to-action-state";
-import { lucia } from "@/lib/lucia";
+import { hashPassword } from "@/features/password/utils/hash-and-verify";
+import { createSession } from "@/lib/lucia";
 import { prisma } from "@/lib/prisma";
 import { ticketsPath } from "@/paths";
+import { generateRandomToken } from "@/utils/crypto";
+import { setSessionCookie } from "../utils/session-cookie";
 
 const signUpSchema = z
   .object({
@@ -40,15 +41,12 @@ const signUpSchema = z
 
 export const signUp = async (_actionState: ActionState, formData: FormData) => {
   try {
-    // Parse and validate the form data using the signUpSchema
     const { username, email, password } = signUpSchema.parse(
       Object.fromEntries(formData),
     );
 
-    // Hash the password using argon2
-    const passwordHash = await hash(password);
+    const passwordHash = await hashPassword(password);
 
-    // Create the user in the database
     const user = await prisma.user.create({
       data: {
         username,
@@ -56,17 +54,11 @@ export const signUp = async (_actionState: ActionState, formData: FormData) => {
         passwordHash,
       },
     });
-    // Create a session for the user in our DB using Lucia
-    const session = await lucia.createSession(user.id, {});
-    // Create a session cookie using Lucia
-    const sessionCookie = lucia.createSessionCookie(session.id);
 
-    // Set the session cookie using Next.js cookies API
-    (await cookies()).set(
-      sessionCookie.name,
-      sessionCookie.value,
-      sessionCookie.attributes,
-    );
+    const sessionToken = generateRandomToken();
+    const session = await createSession(sessionToken, user.id);
+
+    await setSessionCookie(sessionToken, session.expiresAt);
   } catch (error) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
@@ -74,10 +66,11 @@ export const signUp = async (_actionState: ActionState, formData: FormData) => {
     ) {
       return toActionState(
         "ERROR",
-        "Username or email already exists",
+        "Either email or username is already in use",
         formData,
       );
     }
+
     return fromErrorToActionState(error, formData);
   }
 
