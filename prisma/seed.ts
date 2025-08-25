@@ -45,8 +45,8 @@ const seed = async () => {
   const t0 = performance.now();
   console.log("DB Seed: Started ...");
   // Clear existing tickets and users
-  await prisma.ticket.deleteMany();
   await prisma.user.deleteMany();
+  await prisma.ticket.deleteMany();
 
   const passwordHash = await hash("password");
 
