@@ -1,8 +1,21 @@
+import { hash } from "@node-rs/argon2";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 // type TicketStatus = "OPEN" | "IN_PROGRESS" | "DONE";
+
+const users = [
+  {
+    username: "admin",
+    email: "admin@admin.com",
+  },
+  {
+    username: "user",
+    // use your own email here
+    email: "cpoumian@gmail.com",
+  },
+];
 
 const tickets = [
   {
@@ -31,12 +44,26 @@ const tickets = [
 const seed = async () => {
   const t0 = performance.now();
   console.log("DB Seed: Started ...");
-  // Clear existing tickets
+  // Clear existing tickets and users
   await prisma.ticket.deleteMany();
+  await prisma.user.deleteMany();
+
+  const passwordHash = await hash("password");
 
   // Option 3: Most straightforward
+  const dbUsers = await prisma.user.createManyAndReturn({
+    data: users.map((user) => ({
+      ...user,
+      passwordHash,
+    })),
+  });
+
   await prisma.ticket.createMany({
-    data: tickets,
+    data: tickets.map((ticket) => ({
+      ...ticket,
+      // Assign all tickets to the first user (admin)
+      userId: dbUsers[0].id,
+    })),
   });
 
   const t1 = performance.now();
