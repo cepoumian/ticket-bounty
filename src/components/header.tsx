@@ -5,7 +5,7 @@ import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { signOut } from "@/features/auth/actions/sign-out";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { homePath, signInPath, signUpPath, ticketsPath } from "@/paths";
+import { homePath, signInPath, signUpPath } from "@/paths";
 import { SubmitButton } from "./form/submit-button";
 import { ThemeSwitcher } from "./theme/theme-switcher";
 
@@ -18,19 +18,9 @@ const Header = () => {
   }
 
   const navItems = user ? (
-    <>
-      <Link
-        href={ticketsPath()}
-        className={buttonVariants({
-          variant: "default",
-        })}
-      >
-        Tickets
-      </Link>
-      <form action={signOut}>
-        <SubmitButton label="Sign Out" icon={<LucideLogOut />} />
-      </form>
-    </>
+    <form action={signOut}>
+      <SubmitButton label="Sign Out" icon={<LucideLogOut />} />
+    </form>
   ) : (
     <>
       <Link
