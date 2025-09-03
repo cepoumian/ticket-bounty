@@ -9,13 +9,16 @@ export const getTickets = async (
     // Safe to do this as Prisma just ignores undefined values
     where: {
       userId,
-      title: {
-        contains: searchParams.search,
-        mode: "insensitive",
-      },
+      ...(typeof searchParams.search === "string" && {
+        title: {
+          contains: searchParams.search,
+          mode: "insensitive",
+        },
+      }),
     },
     orderBy: {
-      createdAt: "desc",
+      ...(searchParams.sort === undefined && { createdAt: "desc" }),
+      ...(searchParams.sort === "bounty" && { bounty: "desc" }),
     },
     include: {
       user: {
