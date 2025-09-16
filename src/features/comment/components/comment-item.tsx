@@ -3,21 +3,25 @@ import { CommentWithMetadata } from "../types";
 
 type CommentItemProps = {
   comment: CommentWithMetadata;
+  buttons: React.ReactNode[];
 };
 
-const CommentItem = ({ comment }: CommentItemProps) => {
+const CommentItem = ({ comment, buttons }: CommentItemProps) => {
   return (
-    <Card className="flex flex-1 flex-col gap-y-1 p-4">
-      <div className="flex justify-between">
-        <p className="text-muted-foreground text-sm">
-          {comment.user?.username ?? "Deleted User"}
-        </p>
-        <p className="text-muted-foreground text-sm">
-          {comment.createdAt.toLocaleString()}
-        </p>
-      </div>
-      <p className="whitespace-pre-line">{comment.content}</p>
-    </Card>
+    <div className="flex gap-x-2">
+      <Card className="flex flex-1 flex-col gap-y-1 p-4">
+        <div className="flex justify-between">
+          <p className="text-muted-foreground text-sm">
+            {comment.user?.username ?? "Deleted User"}
+          </p>
+          <p className="text-muted-foreground text-sm">
+            {comment.createdAt.toLocaleString()}
+          </p>
+        </div>
+        <p className="whitespace-pre-line">{comment.content}</p>
+      </Card>
+      <div className="flex flex-col gap-y-1">{buttons}</div>
+    </div>
   );
 };
 
