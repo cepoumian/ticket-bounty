@@ -1,13 +1,13 @@
+"use client";
+
 import { Prisma } from "@prisma/client";
 import { clsx } from "clsx";
 import {
   LucideMoreVertical,
   LucidePencil,
   LucideSquareArrowOutUpRight,
-  /* LucideTrash, */
 } from "lucide-react";
 import Link from "next/link";
-// import { ConfirmDialog } from "@/components/confirm-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -16,28 +16,22 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { getAuth } from "@/features/auth/queries/get-auth";
-import { isOwner } from "@/features/auth/utils/is-owner";
 import { Comments } from "@/features/comment/components/comments";
 import { CommentWithMetadata } from "@/features/comment/types";
 import { TICKET_ICONS } from "@/features/ticket/constants";
 import { ticketEditPath, ticketPath } from "@/paths";
 import { toCurrencyFromCent } from "@/utils/currency";
-// import { deleteTicket } from "../actions/delete-ticket";
 import { TicketMoreMenu } from "./ticket-more-menu";
 
 type TicketItemProps = {
   ticket: Prisma.TicketGetPayload<{
     include: { user: { select: { username: true } } };
-  }>;
+  }> & { isOwner: boolean };
   isDetail?: boolean;
   comments?: CommentWithMetadata[];
 };
 
-const TicketItem = async ({ ticket, comments, isDetail }: TicketItemProps) => {
-  const { user } = await getAuth();
-  const isTicketOwner = isOwner(user, ticket);
-
+const TicketItem = ({ ticket, comments, isDetail }: TicketItemProps) => {
   const detailButton = (
     <Button asChild variant="outline" size="icon">
       <Link prefetch href={ticketPath(ticket.id)}>
@@ -46,7 +40,7 @@ const TicketItem = async ({ ticket, comments, isDetail }: TicketItemProps) => {
     </Button>
   );
 
-  const editButton = isTicketOwner ? (
+  const editButton = ticket.isOwner ? (
     <Button variant="outline" size="icon" asChild>
       <Link prefetch href={ticketEditPath(ticket.id)}>
         <LucidePencil className="h-4 w-4" />
@@ -54,18 +48,7 @@ const TicketItem = async ({ ticket, comments, isDetail }: TicketItemProps) => {
     </Button>
   ) : null;
 
-  /* const deleteButton = (
-    <ConfirmDialog
-      action={deleteTicket.bind(null, ticket.id)}
-      trigger={
-        <Button variant="outline" size="icon">
-          <LucideTrash className="h-4 w-4" />
-        </Button>
-      }
-    />
-  ); */
-
-  const moreMenu = isTicketOwner ? (
+  const moreMenu = ticket.isOwner ? (
     <TicketMoreMenu
       ticket={ticket}
       trigger={
