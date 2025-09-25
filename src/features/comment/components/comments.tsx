@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { CardCompact } from "@/components/card-compact";
 import { Button } from "@/components/ui/button";
 import { getComments } from "../queries/get-comments";
@@ -10,13 +11,24 @@ import { CommentItem } from "./comment-item";
 
 type CommentsProps = {
   ticketId: string;
-  comments?: CommentWithMetadata[];
+  paginatedComments: {
+    list: CommentWithMetadata[];
+    metadata: {
+      count: number;
+      hasNextPage: boolean;
+    };
+  };
 };
 
-const Comments = ({ ticketId, comments = [] }: CommentsProps) => {
+const Comments = ({ ticketId, paginatedComments }: CommentsProps) => {
+  const [comments, setComments] = useState(paginatedComments.list);
+  const [metadata, setMetadata] = useState(paginatedComments.metadata);
+
   const handleMore = async () => {
-    const result = await getComments(ticketId);
-    console.log(result);
+    const morePaginatedComments = await getComments(ticketId, comments.length);
+    const moreComments = morePaginatedComments.list;
+    setComments([...comments, ...moreComments]);
+    setMetadata(morePaginatedComments.metadata);
   };
 
   return (
@@ -45,9 +57,11 @@ const Comments = ({ ticketId, comments = [] }: CommentsProps) => {
         ))}
       </div>
       <div className="ml-8 flex flex-col justify-center">
-        <Button variant="ghost" size="sm" onClick={handleMore}>
-          More
-        </Button>
+        {metadata.hasNextPage && (
+          <Button variant="ghost" size="sm" onClick={handleMore}>
+            More
+          </Button>
+        )}
       </div>
     </>
   );
