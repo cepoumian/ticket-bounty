@@ -23,7 +23,6 @@ const Comments = ({ ticketId, comments = [] }: CommentsProps) => {
             key={comment.id}
             comment={comment}
             buttons={[
-              // ...(isOwner(user, comment)
               ...(comment.isOwner
                 ? [
                     <CommentDeleteButton
