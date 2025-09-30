@@ -17,14 +17,12 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-// import { Form } from "../form";
-// import { SubmitButton } from "../submit-button";
 import { ActionState, EMPTY_ACTION_STATE } from "../utils/to-action-state";
 import { useActionFeedback } from "./use-action-feddback";
 
 type UseConfirmDialogProps = {
   action: () => Promise<ActionState>;
-  trigger: React.ReactElement;
+  trigger: React.ReactElement | ((isPending: boolean) => React.ReactElement);
   title?: string;
   description?: string;
   onSuccess?: (actionState: ActionState) => void;
@@ -60,9 +58,12 @@ const useConfirmDialog = ({
     };
   }, [isPending]);
 
-  const dialogTrigger = cloneElement(trigger, {
-    onClick: () => setIsOpen((state) => !state),
-  } as React.HTMLAttributes<HTMLElement>);
+  const dialogTrigger = cloneElement(
+    typeof trigger === "function" ? trigger(isPending) : trigger,
+    {
+      onClick: () => setIsOpen((state) => !state),
+    } as React.HTMLAttributes<HTMLElement>,
+  );
 
   useActionFeedback(actionState, {
     onSuccess: ({ actionState }) => {
