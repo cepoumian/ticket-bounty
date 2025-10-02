@@ -16,7 +16,7 @@ type CommentsProps = {
     metadata: {
       count: number;
       hasNextPage: boolean;
-      cursor?: number;
+      cursor?: { id: string; createdAt: number };
     };
   };
 };
