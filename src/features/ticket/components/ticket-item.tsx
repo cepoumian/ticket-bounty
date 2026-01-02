@@ -63,9 +63,16 @@ const TicketItem = ({ ticket, comments, isDetail }: TicketItemProps) => {
       <div className="flex gap-x-2">
         <Card className="w-full">
           <CardHeader>
-            <CardTitle className="flex gap-x-2">
+            <CardTitle className="flex items-center gap-x-2">
               <span>{TICKET_ICONS[ticket.status]}</span>
-              <h3 className="truncate text-2xl font-bold">{ticket.title}</h3>
+              <h3
+                className={clsx("text-2xl font-bold break-words", {
+                  "line-clamp-2": !isDetail,
+                  "line-clamp-3": isDetail,
+                })}
+              >
+                {ticket.title}
+              </h3>
             </CardTitle>
           </CardHeader>
           <CardContent>
