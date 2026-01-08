@@ -492,11 +492,11 @@ npm run type         # TypeScript check
 - [x] Dark/light theme
 - [x] Responsive design
 - [x] Toast notifications
+- [x] Account profile editing
 
 ### 🚧 Incomplete (Stubs)
 
 - [ ] Password reset flow
-- [ ] Account profile editing
 - [ ] Comment editing (only create/delete implemented)
 - [ ] Real-time updates (no WebSockets)
 - [ ] Email notifications
