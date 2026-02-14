@@ -39,25 +39,24 @@ export const passwordReset = async (
       confirmPassword: formData.get("confirmPassword"),
     });
 
-    // TODO: Implement password reset
     const tokenHash = hashToken(tokenId);
 
     const passwordResetToken = await prisma.passwordResetToken.findUnique({
       where: { tokenHash },
     });
 
-    if (passwordResetToken) {
-      await prisma.passwordResetToken.delete({
-        where: { tokenHash },
-      });
-    }
-
+    // Check if token exists and is not expired BEFORE deleting
     if (
       !passwordResetToken ||
       Date.now() > passwordResetToken.expiresAt.getTime()
     ) {
       return toActionState("ERROR", "Invalid or expired token");
     }
+
+    // Token is valid, now delete it (one-time use)
+    await prisma.passwordResetToken.delete({
+      where: { tokenHash },
+    });
 
     await prisma.session.deleteMany({
       where: {
