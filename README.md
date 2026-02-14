@@ -476,6 +476,30 @@ npm run type         # TypeScript check
 - **Pagination**: Offset-based for tickets, cursor-based for comments
 - **Debouncing**: 250ms for search inputs
 
+## 🤖 AI Development Notes
+
+This project explores modern full-stack development patterns and includes an experiment with AI-assisted development:
+
+### Email Template System
+
+The email template system (`src/emails/components/` and redesigned password reset email) was implemented using **Cursor Agent Mode** with Claude 3.5 Sonnet as an experiment to evaluate AI capabilities in component design and UI implementation.
+
+**Why document this?**
+
+- Transparency in the development process
+- Educational value for understanding AI-assisted development
+- Clear attribution of AI vs. human-written code
+
+**All other code** in this repository was hand-written to demonstrate mastery of:
+
+- Next.js 15 App Router & React Server Components
+- Custom authentication implementation
+- Database design with Prisma
+- State management patterns
+- Modern React patterns
+
+---
+
 ## 🎯 Feature Status
 
 ### ✅ Complete
