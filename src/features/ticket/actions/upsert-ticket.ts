@@ -27,6 +27,7 @@ export const upsertTicket = async (
   _actionState: ActionState,
   formData: FormData,
 ) => {
+  // First, authenticate using a cached query.
   const { user } = await getAuthOrRedirect();
 
   try {
@@ -39,7 +40,7 @@ export const upsertTicket = async (
         return toActionState("ERROR", "Not authorized");
       }
     }
-
+    // Second, validate with Zod
     const data = upsertTicketSchema.parse({
       title: formData.get("title"),
       content: formData.get("content"),
@@ -52,7 +53,7 @@ export const upsertTicket = async (
       userId: user.id,
       bounty: toCent(data.bounty), // Convert to cents
     };
-
+    // Third, perform the database operation
     await prisma.ticket.upsert({
       where: {
         id: id || "",
@@ -63,13 +64,13 @@ export const upsertTicket = async (
   } catch (error: unknown) {
     return fromErrorToActionState(error, formData);
   }
-
+  // Fourth, revalidate Next.js cache so the UI updates
   revalidatePath(ticketsPath());
 
   if (id) {
     await setCookieByKey("toast", "Ticket updated");
     redirect(ticketPath(id));
   }
-
+  // Finally, return a standardized ActionState
   return toActionState("SUCCESS", "Ticket created successfully");
 };

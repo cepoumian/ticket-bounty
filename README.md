@@ -493,10 +493,10 @@ npm run type         # TypeScript check
 - [x] Responsive design
 - [x] Toast notifications
 - [x] Account profile editing
+- [x] Password reset flow
 
 ### 🚧 Incomplete (Stubs)
 
-- [ ] Password reset flow
 - [ ] Comment editing (only create/delete implemented)
 - [ ] Real-time updates (no WebSockets)
 - [ ] Email notifications

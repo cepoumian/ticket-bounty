@@ -21,6 +21,7 @@ type TicketUpsertFormProps = {
 };
 
 const TicketUpsertForm = ({ ticket }: TicketUpsertFormProps) => {
+  // Bind the server action
   const [actionState, action] = useActionState(
     upsertTicket.bind(null, ticket?.id),
     EMPTY_ACTION_STATE,
@@ -35,6 +36,7 @@ const TicketUpsertForm = ({ ticket }: TicketUpsertFormProps) => {
   };
 
   return (
+    // Pass it to Form
     <Form action={action} actionState={actionState} onSuccess={handleSuccess}>
       <Label htmlFor="title">Title</Label>
       <Input

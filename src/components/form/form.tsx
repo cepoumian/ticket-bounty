@@ -24,10 +24,6 @@ const Form = ({
         toast.success(actionState.message);
       }
       // Call the onSuccess callback if provided.
-      /* if (onSuccess) {
-        onSuccess(actionState);
-      } */
-      // Use optional chaining instead of a conditional to avoid unnecessary checks.
       onSuccess?.(actionState);
     },
     onError: ({ actionState }) => {
