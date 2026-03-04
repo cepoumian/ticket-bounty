@@ -11,8 +11,10 @@ import {
 import { hashPassword } from "@/features/password/utils/hash-and-verify";
 import { createSession } from "@/lib/lucia";
 import { prisma } from "@/lib/prisma";
-import { ticketsPath } from "@/paths";
+import { signInPath, ticketsPath } from "@/paths";
 import { generateRandomToken } from "@/utils/crypto";
+import { getBaseUrl } from "@/utils/url";
+import { sendEmailWelcome } from "../emails/send-email-welcome";
 import { setSessionCookie } from "../utils/session-cookie";
 
 const signUpSchema = z
@@ -59,6 +61,16 @@ export const signUp = async (_actionState: ActionState, formData: FormData) => {
     const session = await createSession(sessionToken, user.id);
 
     await setSessionCookie(sessionToken, session.expiresAt);
+
+    try {
+      await sendEmailWelcome(
+        user.username,
+        user.email,
+        `${getBaseUrl()}${signInPath()}`,
+      );
+    } catch (error) {
+      console.error("Error sending welcome email", error);
+    }
   } catch (error) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&

@@ -7,7 +7,7 @@ import {
   toActionState,
 } from "@/components/form/utils/to-action-state";
 import { getAuthOrRedirect } from "@/features/auth/queries/get-auth-or-redirect";
-import { sendEmailPasswordReset } from "../emails/send-email-password-rest";
+import { sendEmailPasswordReset } from "../emails/send-email-password-reset";
 import { generatePasswordResetLink } from "../utils/generate-password-reset-link";
 import { verifyPasswordHash } from "../utils/hash-and-verify";
 

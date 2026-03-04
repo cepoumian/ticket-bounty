@@ -7,7 +7,7 @@ import {
   toActionState,
 } from "@/components/form/utils/to-action-state";
 import { prisma } from "@/lib/prisma";
-import { sendEmailPasswordReset } from "../emails/send-email-password-rest";
+import { sendEmailPasswordReset } from "../emails/send-email-password-reset";
 import { generatePasswordResetLink } from "../utils/generate-password-reset-link";
 
 const passwordForgotSchema = z.object({
